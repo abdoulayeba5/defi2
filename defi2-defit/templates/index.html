@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SideBar Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
+  </head>
+  <body>
+    <nav class="sidebar">
+      <div class="logo-menu">
+        <i class="bx bx-menu toggle-btn"></i>
+        <h2 class="logo">Netcode</h2>
+      </div>
+
+      <ul class="list">
+        <li class="list-item active">
+          <a href="#">
+            <i class='bx bx-home-alt' ></i>
+            <span class="link-name">Home</span>
+          </a>
+        </li>
+        <li class="list-item">
+          <a href="/upload">
+            <i class='bx bx-cloud-upload'></i>
+            <span class="link-name">upload</span>
+          </a>
+        </li>
+        <li class="list-item">
+          <a href="/maps">
+            <i class='bx bx-map' ></i>
+            <span class="link-name">maps</span>
+          </a>
+        </li>
+ 
+        <li class="list-item">
+          <a href="#">
+            <i class="bx bx-log-out"></i>
+            <span class="link-name">Logout</span>
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+    <section class="home">
+          <div class="description">
+            <h1 class="title">
+              <span class="gradient-text">Discover the World </span> Around You
+            </h1>
+            <p class="paragraph">
+              MapExplorer is a dynamic web application designed to provide users with an immersive experience of exploring maps and discovering interesting places around the globe. With its user-friendly interface and comprehensive database of locations, MapExplorer empowers users to navigate, explore, and learn about different regions, landmarks, and points of interest worldwide.
+            </p>
+
+          </div>
+    
+          <div class="users-color-container">
+            <span class="item" style="--i: 1"></span>
+            <span class="item" style="--i: 2"></span>
+            <span class="item" style="--i: 3"></span>
+            <span class="item" style="--i: 3"></span>
+            <span class="item" style="--i: 3"></span>
+
+            <span class="item" style="--i: 11"></span>
+            <span class="item" style="--i: 3"></span>
+
+            <span class="item" style="--i: 5"></span>
+    
+            <span class="item" style="--i: 9"></span>
+            <img class="item" src="{{ url_for('static', filename='1.jpg') }}" style="--i: 8" alt="" />
+            <span class="item" style="--i: 7"></span>
+            <span class="item" style="--i: 3"></span>
+          </div>
+        </section>
+    
+        <section class="card-container" id="card-container">
+          <div class="slider">
+            <div class="card" data-tilt>
+              <div class="content">
+                <img src="{{ url_for('static', filename='e.png') }}" alt="" />
+                <h1>GeoData</h1>
+                <p>
+                  importing Excel files containing longitude, latitude, and place names into the application's database.utilize geographic information for various purposes, such as mapping, analytics, and visualization.
+                </p>
+                
+              </div>
+            </div>
+    
+            <div class="card" data-tilt>
+              <div class="content">
+                <img src="{{ url_for('static', filename='2.jpg') }}" alt="" />
+                <h1>Algorithm</h1>
+                <p>
+
+                  The app combines an approximation algorithm with Ant Colony Optimization (ACO) to refine route planning and navigation, providing users with efficient paths while minimizing computational complexity.                </p>
+                
+              </div>
+            </div>
+    
+            <div class="card" data-tilt>
+              <div class="content">
+                <img src="{{ url_for('static', filename='g.jpg') }}" alt="" />
+                <h1>maps</h1>
+                <p>
+                  
+The app offers interactive maps, charts, and graphs to help users explore maps and geographic data. These visualizations provide valuable insights into spatial relationships, trends, and patterns.
+                </p>
+                
+              </div>
+            </div>
+    
+        
+    
+          </div>
+    
+      
+      </section>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='home.js') }}"></script>
+
+  </body>
+</html>
