@@ -1,21 +1,13 @@
 import base64
 import io
-import json
-import webbrowser
 from flask import Flask, Response, jsonify, render_template, request
-import folium
-import numpy as np
-import random
 import networkx as nx
-import geopy.distance
-import pandas as pd
 import matplotlib
 matplotlib.use('Agg')  
 import matplotlib.pyplot as plt
 from ant_colony import *
 from graphe import upload
 from maps import *
-import os
  
 app = Flask(__name__)
 
