@@ -1,14 +1,13 @@
 {% include 'header.html' %}
 
 <section class="home">
-    <h1>Ant Colony Optimization Results</h1>
+  <h1>Ant Colony Optimization Results</h1>
 
-    
-    <li>{{ results.best_tour }}</li>
+  <li>{{ results.best_tour }}</li>
 
+  <img src="data:image/png;base64,{{ plot }}" alt="Graph Visualization" />
 
-    <h2>Graph Visualization:</h2>
-    <img src="data:image/png;base64,{{ plot }}" alt="Graph Visualization">
+  {% include 'maps/ACO.html' %}
 </section>
 
-    {% include 'bottom.html' %}
+{% include 'bottom.html' %}

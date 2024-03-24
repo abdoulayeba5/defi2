@@ -14,40 +14,17 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from ant_colony import *
 from graphe import upload
+from maps import *
+import os
  
 app = Flask(__name__)
 
 
 
-#fuction pour la visualisation du maps 
-def visualize_graph(G):
-    m = folium.Map(location=[20.0, -10.0], zoom_start=6)
-    for u, v, data in G.edges(data=True):
-        # Ajouter la ligne entre les villes avec une flèche
-        folium.PolyLine(
-            locations=[(G.nodes[u]['pos'][0], G.nodes[u]['pos'][1]), (G.nodes[v]['pos'][0], G.nodes[v]['pos'][1])],
-            color='blue', weight=1, opacity=0.5, dash_array='5, 5').add_to(m)
 
-        # Ajouter les marqueurs pour chaque ville
-        folium.Marker(location=(G.nodes[u]['pos'][0], G.nodes[u]['pos'][1]), popup=u,
-                      icon=folium.Icon(color='green', icon='circle', prefix='fa')).add_to(m)
-        folium.Marker(location=(G.nodes[v]['pos'][0], G.nodes[v]['pos'][1]), popup=v,
-                      icon=folium.Icon(color='green', icon='circle', prefix='fa')).add_to(m)
 
-        # Calculer la position du label de distance
-        label_lat = (G.nodes[u]['pos'][0] + G.nodes[v]['pos'][0]) / 2
-        label_lon = (G.nodes[u]['pos'][1] + G.nodes[v]['pos'][1]) / 2
 
-        # Ajouter le label de distance
-        folium.Marker(location=(label_lat, label_lon), icon=folium.DivIcon(
-            html=f'<div style="font-size: 8pt;">{round(data["weight"], 2)} km</div>')).add_to(m)
 
-    # Ajuster le zoom et la position de la carte
-    m.fit_bounds(m.get_bounds())
-
-    return m
-
-    
 @app.route('/')
 def main():
     return render_template('index.html')
@@ -104,6 +81,12 @@ def run_ant_colony_optimization():
     plot_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     plt.close()
+    
+    m = visualize_ant_colony(G,best_tour)
+    m.save('templates/maps/ACO.html')
+    # Chemin absolu complet vers le fichier HTML de la carte
+    # map_path = os.path.abspath('maps/ant_colony.html')
+    # webbrowser.open('file://' + map_path)
 
     return render_template('ant_colony.html',results=results, plot=plot_base64)
 
@@ -142,7 +125,15 @@ def Alg_approx():
     buffer.seek(0)
     plot_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
     plt.close()
+    
+    m = visualize_approximation(G,path)
+    m.save('templates/maps/approximation.html')
+    # map_path = os.path.abspath('maps/approximation.html')
+    # webbrowser.open('file://' + map_path)
+
     return render_template('graphe_Approx.html', results=results, plot=plot_base64)
+
+
 
 @app.get('/maps')
 def maps():
@@ -150,9 +141,12 @@ def maps():
 
     m = visualize_graph(G)
 
-    m.save('mauritania_map_with_graph8.html')
+    m.save('templates/maps/map1.html')
+    
+    
+    return render_template('map.html')
+    
 
-    webbrowser.open('mauritania_map_with_graph8.html')
 
 
 
