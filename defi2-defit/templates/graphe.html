@@ -1,14 +1,7 @@
-<!-- templates/index.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matplotlib Plot</title>
-</head>
-<body>
-    <h1>Matplotlib Plot</h1>
-    <!-- Embed the base64-encoded image -->
-    <img src="data:image/png;base64,{{ plot }}" alt="Matplotlib Plot">
-</body>
-</html>
+{% include 'header.html' %}
+
+
+    <h2>Graph Visualization:</h2>
+    <img src="data:image/png;base64,{{ plot }}" alt="Graph Visualization">
+
+{% include 'header.html' %}

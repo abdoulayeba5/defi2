@@ -9,99 +9,15 @@ import random
 import networkx as nx
 import geopy.distance
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')  
 import matplotlib.pyplot as plt
+from ant_colony import *
+from graphe import upload
  
 app = Flask(__name__)
 
 
-# Fonction pour calculer la visibilité entre deux villes (distance inverse)
-def visibility(G, u, v):
-    return 1 / G[u][v]['weight']
-
-# Fonction pour initialiser les niveaux de phéromone sur toutes les arêtes
-def initialize_pheromone(G, initial_pheromone=0.1):
-    for u, v in G.edges():
-        G[u][v]['pheromone'] = initial_pheromone
-
-# Fonction pour choisir la prochaine ville à visiter pour une fourmi donnée
-def choose_next_vertex(G, visited, current_vertex, alpha, beta):
-    unvisited = [v for v in G.nodes() if v not in visited]
-    probabilities = []
-    total = 0
-    for v in unvisited:
-        if G.has_edge(current_vertex, v):
-            pheromone = G[current_vertex][v]['pheromone']
-            visibility_val = visibility(G, current_vertex, v)
-            probabilities.append((v, pheromone ** alpha * visibility_val ** beta))
-            total += pheromone ** alpha * visibility_val ** beta
-    probabilities = [(v, p / total) for v, p in probabilities]
-    next_vertex = random.choices([v for v, _ in probabilities], [p for _, p in probabilities])[0]
-    return next_vertex
-
-# Fonction pour déposer la quantité de phéromone sur chaque arête visitée
-def deposit_pheromone(G, tour, Q):
-    for i in range(len(tour) - 1):
-        u = tour[i]
-        v = tour[i + 1]
-        G[u][v]['pheromone'] += Q / len(tour)
-        
-
-# uploader les fichier excel
-def upload():
-    capitales_df = pd.read_excel('Cordonnees_GPS.xlsx', sheet_name='Capitales_Wilaya')
-    # mougataas_df = pd.read_excel('Cordonnees_GPS.xlsx', sheet_name='Mougataa')
-
-    G = nx.Graph()
-    
-    for _, row in capitales_df.iterrows():
-        ville, latitude, longitude = row
-        G.add_node(ville, pos=(latitude, longitude))
-
-    # for _, row in mougataas_df.iterrows():
-    #     ville, wilaya, latitude, longitude = row
-    #     G.add_node(ville, pos=(latitude, longitude))
-
-    for u in G.nodes():
-        for v in G.nodes():
-            if u != v and not G.has_edge(u, v):
-                coords_u = G.nodes[u]['pos']
-                coords_v = G.nodes[v]['pos']
-                distance = geopy.distance.geodesic(coords_u, coords_v).km      
-                G.add_edge(u, v, weight=distance)
-    return G
-
-
-
-# Algorithme de colonie de fourmis
-def ant_colony_optimization(G, num_ants, alpha, beta, evaporation_rate, num_iterations, Q):
-    best_tour = None
-    best_tour_length = np.inf
-    initialize_pheromone(G)
-
-    for _ in range(num_iterations):
-        for ant in range(num_ants):
-            current_vertex = "Nouakchott"  # Définir la ville de départ comme "Nouakchott"
-            tour = [current_vertex]
-            visited = set([current_vertex])
-            while len(visited) < len(G.nodes()):
-                next_vertex = choose_next_vertex(G, visited, current_vertex, alpha, beta)
-                tour.append(next_vertex)
-                visited.add(next_vertex)
-                current_vertex = next_vertex
-            
-            # Assurez-vous que le parcours se termine à "Nouakchott"
-            tour.append("Nouakchott")
-            
-            # Calculer la longueur totale du parcours
-            tour_length = nx.path_weight(G, tour, weight='weight')
-            if tour_length < best_tour_length:
-                best_tour = tour
-                best_tour_length = tour_length
-            deposit_pheromone(G, tour, Q)
-        for u, v in G.edges():
-            G[u][v]['pheromone'] *= (1 - evaporation_rate)
-
-    return best_tour, best_tour_length
 
 #fuction pour la visualisation du maps 
 def visualize_graph(G):
@@ -130,7 +46,6 @@ def visualize_graph(G):
     m.fit_bounds(m.get_bounds())
 
     return m
-
 
     
 @app.route('/')
@@ -168,112 +83,66 @@ def run_ant_colony_optimization():
     num_iterations = 100
     Q = 100
 
-    # Appliquer l'algorithme de colonie de fourmis
     best_tour, best_tour_length = ant_colony_optimization(G, num_ants, alpha, beta, evaporation_rate, num_iterations, Q)
 
     results = {
         "best_tour": best_tour,
         "best_tour_length": best_tour_length
     }
-    # Affichage graphique du graphe et de la solution trouvée
     plt.figure(figsize=(10, 6))
-
-    # Affichage du graphe
     pos = nx.get_node_attributes(G, 'pos')
     nx.draw(G, pos, with_labels=True, node_size=200, node_color='skyblue')
     plt.title('Graphe des villes en Mauritanie')
 
-    # Affichage de la solution trouvée
     best_tour_edges = [(best_tour[i], best_tour[i + 1]) for i in range(len(best_tour) - 1)]
     nx.draw_networkx_edges(G, pos, edgelist=best_tour_edges, edge_color='red', width=2)
-    
-        # Save plot to a buffer
+
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
 
-    # Encode plot to base64
     plot_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     plt.close()
 
-    return render_template('graphe.html', plot=plot_base64)
+    return render_template('ant_colony.html',results=results, plot=plot_base64)
 
     
-
-    # return jsonify(results)
-
-
 
 @app.get('/Alg_approx')
 def Alg_approx():
-    
-    # recuperer le graph 
-    G=upload()
-    # Calculer l'arbre couvrant minimal
+    G = upload()
     mst = nx.minimum_spanning_tree(G)
 
     ville_depart = 'Nouakchott'
     ville_arrivee = 'Nouakchott'
 
-    # Effectuer le parcours DFS sur l'arbre couvrant minimal à partir de Nouakchott
-    dfs_edges = list(nx.dfs_edges(mst, source=ville_depart))
+    visited = set()
+    path = [ville_depart]
 
-    # Ajouter la dernière arête pour revenir à Nouakchott
-    dfs_edges.append((dfs_edges[-1][1], ville_arrivee))
+    def dfs(city):
+        visited.add(city)
+        for neighbor in mst.neighbors(city):
+            if neighbor not in visited:
+                path.append(neighbor)
+                dfs(neighbor)
 
-    # Formatter les résultats dans un format JSON
-    results = [{"from": edge[0], "to": edge[1]} for edge in dfs_edges]
+    dfs(ville_depart)
 
-    # Retourner les résultats
-    return jsonify(results)
+    path.append(ville_arrivee)
 
+    results = [{"from": path[i], "to": path[i + 1]} for i in range(len(path) - 1)]
 
-
-
-# @app.get('/Alg_approx')
-# def Alg_approx():
-#     # Retrieve the graph
-#     G = upload()
-    
-#     # Calculate the minimum spanning tree
-#     mst = nx.minimum_spanning_tree(G)
-
-#     ville_depart = 'Nouakchott'
-#     ville_arrivee = 'Nouakchott'
-
-#     # Perform DFS traversal on the minimum spanning tree starting from Nouakchott
-#     dfs_edges = list(nx.dfs_edges(mst, source=ville_depart))
-
-#     # Add the last edge to return to Nouakchott
-#     dfs_edges.append((dfs_edges[-1][1], ville_arrivee))
-
-#     # Format the results into JSON format
-#     results = [{"from": edge[0], "to": edge[1]} for edge in dfs_edges]
-
-#     # Matplotlib visualization
-#     plt.figure(figsize=(8, 6))
-
-#     # Draw the graph
-#     pos = nx.spring_layout(G)  # You can choose a layout algorithm that suits your graph
-#     nx.draw(G, pos, with_labels=True, node_size=200, node_color='skyblue')
-#     nx.draw_networkx_edges(G, pos, edgelist=dfs_edges, edge_color='red', width=2)
-
-#     # Save plot to a buffer
-#     buffer = io.BytesIO()
-#     plt.savefig(buffer, format='png')
-#     buffer.seek(0)
-
-#     # Encode plot to base64
-#     plot_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-
-#     plt.close()
-
-#     return render_template('graphe.html', plot=plot_base64)
-
-#     # Return the results along with the plot
-#     return jsonify({"results": results, "plot": plot_base64})
-
+    plt.figure(figsize=(8, 6))
+    pos = nx.spring_layout(G) 
+    nx.draw(G, pos, with_labels=True, node_size=200, node_color='skyblue')
+    nx.draw_networkx_edges(G, pos, edgelist=[(path[i], path[i + 1]) for i in range(len(path) - 1)], edge_color='red', width=2)
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    plot_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close()
+    return render_template('graphe_Approx.html', results=results, plot=plot_base64)
 
 @app.get('/maps')
 def maps():
@@ -286,48 +155,5 @@ def maps():
     webbrowser.open('mauritania_map_with_graph8.html')
 
 
-    # return render_template('map.html')
 
-
-
-# @app.get("/test")
-# def test():
-#     G=upload()
-#     num_ants = 10
-#     alpha = 1
-#     beta = 2
-#     evaporation_rate = 0.5
-#     num_iterations = 100
-#     Q = 100
-
-#     # Appliquer l'algorithme de colonie de fourmis
-#     best_tour, best_tour_length = ant_colony_optimization(G, num_ants, alpha, beta, evaporation_rate, num_iterations, Q)
-
-#     results = {
-#         "best_tour": best_tour,
-#         "best_tour_length": best_tour_length
-#     }
-#     # Affichage graphique du graphe et de la solution trouvée
-#     plt.figure(figsize=(10, 6))
-
-#     # Affichage du graphe
-#     pos = nx.get_node_attributes(G, 'pos')
-#     nx.draw(G, pos, with_labels=True, node_size=200, node_color='skyblue')
-#     plt.title('Graphe des villes en Mauritanie')
-
-#     # Affichage de la solution trouvée
-#     best_tour_edges = [(best_tour[i], best_tour[i + 1]) for i in range(len(best_tour) - 1)]
-#     nx.draw_networkx_edges(G, pos, edgelist=best_tour_edges, edge_color='red', width=2)
-
-#     # Save plot to a buffer
-#     buffer = io.BytesIO()
-#     plt.savefig(buffer, format='png')
-#     buffer.seek(0)
-
-#     # Encode plot to base64
-#     plot_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-
-#     plt.close()
-
-#     return render_template('graphe.html', plot=plot_base64)
 

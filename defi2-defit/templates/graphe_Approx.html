@@ -1,0 +1,17 @@
+{% include 'header.html' %}
+
+<section class="home">
+    <h1>Graph Visualization</h1>
+
+    <h2>Results:</h2>
+    <ul>
+        {% for edge in results %}
+            <li>{{ edge.from }} -> {{ edge.to }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Graph Visualization:</h2>
+    <img src="data:image/png;base64,{{ plot }}" alt="Graph Visualization">
+</section>
+  
+ {% include 'bottom.html' %}

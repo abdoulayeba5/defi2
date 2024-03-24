@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SideBar Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
+  </head>
+  <body>
+    <nav class="sidebar">
+      <div class="logo-menu">
+        <i class="bx bx-menu toggle-btn"></i>
+        <h2 class="logo">Netcode</h2>
+      </div>
+
+      <ul class="list">
+        <li class="list-item active">
+          <a href="/">
+            <i class='bx bx-home-alt' ></i>
+            <span class="link-name">Home</span>
+          </a>
+        </li>
+        <li class="list-item">
+          <a href="/upload">
+            <i class='bx bx-cloud-upload'></i>
+            <span class="link-name">upload</span>
+          </a>
+        </li>
+        <li class="list-item">
+          <a href="/Alg_approx">
+            <i class='bx bx-map' ></i>
+            <span class="link-name">Approximation</span>
+          </a>
+        </a>
+        </li>
+        <li class="list-item">
+          <a href="/ant_colony">
+            <i class='bx bx-map' ></i>
+            <span class="link-name">ACO</span>
+          </a>
+        </a>
+        </li>
+        <li class="list-item">
+          <a href="/maps">
+            <i class='bx bx-map' ></i>
+            <span class="link-name">maps</span>
+          </a>
+        </a>
+        </li>
+ 
+        <li class="list-item">
+          <a href="#">
+            <i class="bx bx-log-out"></i>
+            <span class="link-name">Logout</span>
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+ 
+ 

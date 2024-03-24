@@ -1,32 +1,14 @@
-<!-- templates/index.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ant Colony Optimization Results</title>
-    <!-- Include any CSS or JavaScript libraries if needed -->
-</head>
-<body>
+{% include 'header.html' %}
+
+<section class="home">
     <h1>Ant Colony Optimization Results</h1>
-    <div id="graph-container">
-        <!-- Graph will be displayed here -->
-    </div>
 
-    <script>
-        // Function to fetch results from Flask endpoint and display the graph
-        async function fetchResults() {
-            const response = await fetch('/run-aco');
-            const data = await response.json();
+    
+    <li>{{ results.best_tour }}</li>
 
-            // Display the graph using the base64-encoded image
-            const graphImage = document.createElement('img');
-            graphImage.src = 'data:image/png;base64,' + data.best_tour;
-            document.getElementById('graph-container').appendChild(graphImage);
-        }
 
-        // Call the fetchResults function when the page loads
-        window.onload = fetchResults;
-    </script>
-</body>
-</html>
+    <h2>Graph Visualization:</h2>
+    <img src="data:image/png;base64,{{ plot }}" alt="Graph Visualization">
+</section>
+
+    {% include 'bottom.html' %}

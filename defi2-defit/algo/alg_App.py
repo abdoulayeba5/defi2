@@ -4,7 +4,7 @@ import geopy.distance
 
 # Charger les données à partir du fichier Excel en utilisant Pandas
 capitales_df = pd.read_excel('Cordonnees_GPS.xlsx', sheet_name='Capitales_Wilaya')
-mougataas_df = pd.read_excel('Cordonnees_GPS.xlsx', sheet_name='Mougataa')
+# mougataas_df = pd.read_excel('Cordonnees_GPS.xlsx', sheet_name='Mougataa')
 
 # Créer un graphe non orienté
 G = nx.Graph()
@@ -14,9 +14,9 @@ for _, row in capitales_df.iterrows():
     ville, latitude, longitude = row
     G.add_node(ville, pos=(latitude, longitude))
 
-for _, row in mougataas_df.iterrows():
-    ville, wilaya, latitude, longitude = row
-    G.add_node(ville, pos=(latitude, longitude))
+# for _, row in mougataas_df.iterrows():
+#     ville, wilaya, latitude, longitude = row
+#     G.add_node(ville, pos=(latitude, longitude))
 
 # Calculer les distances entre les nœuds et ajouter les arêtes au graphe
 for u in G.nodes():
