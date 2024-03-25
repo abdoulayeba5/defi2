@@ -9,7 +9,10 @@ import matplotlib.pyplot as plt
 
 # Fonction pour calculer la visibilité entre deux villes (distance inverse)
 def visibility(G, u, v):
-    return 1 / G[u][v]['weight']
+    if(G[u][v]['weight']>=1):
+        return 1 / G[u][v]['weight']
+    else:
+        return 1
 
 # Fonction pour initialiser les niveaux de phéromone sur toutes les arêtes
 def initialize_pheromone(G, initial_pheromone=0.1):

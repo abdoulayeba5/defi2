@@ -6,7 +6,7 @@ import matplotlib
 matplotlib.use('Agg')  
 import matplotlib.pyplot as plt
 from ant_colony import *
-from graphe import upload
+from graphe import upload, uploadCapital,uploadMyOwnfile
 from maps import *
  
 app = Flask(__name__)
@@ -15,6 +15,7 @@ app = Flask(__name__)
 
 
 
+Graph=upload()
 
 
 @app.route('/')
@@ -32,6 +33,9 @@ def upload_file():
         return "Aucun fichier trouvé !"
     
     file = request.files['file']
+    type = request.form['type']
+    
+    print(type)
 
     if file.filename == '':
         return "Nom de fichier vide !"
@@ -39,12 +43,21 @@ def upload_file():
     if file:
         filename = file.filename
         file.save(filename)
-        return "Fichier téléchargé avec succès !"
-
+        
+        uploadMyOwnfile(filename=filename)
+        # Ownfile()
+        
+        if(type == "ACO"):
+            print("type = ACO")
+            return run_ant_colony_optimization(G=uploadMyOwnfile(filename))
+        else:
+            print("type = alogo d'approx")
+            return Alg_approx(G=uploadMyOwnfile(filename))
+            
+            
 
 @app.route('/ant_colony')
-def run_ant_colony_optimization():
-    G=upload()
+def run_ant_colony_optimization(G=Graph):
     num_ants = 10
     alpha = 1
     beta = 2
@@ -85,8 +98,8 @@ def run_ant_colony_optimization():
     
 
 @app.get('/Alg_approx')
-def Alg_approx():
-    G = upload()
+def Alg_approx(G=Graph):
+    # G = Graph
     mst = nx.minimum_spanning_tree(G)
 
     ville_depart = 'Nouakchott'
@@ -138,6 +151,7 @@ def maps():
     
     return render_template('map.html')
     
+
 
 
 

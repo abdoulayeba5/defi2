@@ -11,13 +11,18 @@
   </div>
 
   <div class="container">
-    <h2>File Upload</h2>
+    <h2 style="color:black;">uploader le fichier ici</h2>
     <form action="/uploadfile" method="post" enctype="multipart/form-data">
       <label for="file-input" class="upload-btn">
         <i class="bx bx-cloud-upload"></i> Choose File</label
       >
       <input type="file" id="file-input" name="file" />
       <p id="file-name"></p>
+      <select name="type">
+        <option value="ACO">ACO</option>
+        <option value="Alg_approx">Algorithme d'approximation</option>
+      </select>
+      
       <button type="submit" class="upload-btn">Upload</button>
     </form>
   </div>
