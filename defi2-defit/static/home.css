@@ -81,7 +81,18 @@ input::placeholder {
   opacity: 0.5;
   font-weight: 500;
 }
-
+select {
+  padding-inline-end: 10px;
+  padding-inline-start: 10px;
+  margin: 10px;
+  background-color: transparent;
+  outline: transparent;
+  border: 1px solid gray;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+  margin-right: 10px;
+  transition: all 0.3s ease-in;
+  -webkit-transition: all 0.3s ease-in;
+}
 input[type="email"] {
   color: rgba(255, 255, 255, 0.7);
   font-weight: 500;
