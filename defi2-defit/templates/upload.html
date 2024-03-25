@@ -5,13 +5,15 @@
       <span class="gradient-text">GeoData </span> from excel
     </h1>
     <p class="paragraph">
-      importing Excel files containing longitude, latitude, and place names into
-      the application's database.
+      importer le fichier excel contenant les nom du villes
+      (<i>Ville</i>) et leurs coordonnee geographique ( <i> latitude </i> et
+      <i>longitude</i> ) et choisiser une methode de d'algoritheme pour vous
+      permettre d'avoir le chemain le plus court a parcourire
     </p>
   </div>
 
   <div class="container">
-    <h2 style="color:black;">uploader le fichier ici</h2>
+    <h2 style="color: black">uploader le fichier ici</h2>
     <form action="/uploadfile" method="post" enctype="multipart/form-data">
       <label for="file-input" class="upload-btn">
         <i class="bx bx-cloud-upload"></i> Choose File</label
@@ -22,7 +24,7 @@
         <option value="ACO">ACO</option>
         <option value="Alg_approx">Algorithme d'approximation</option>
       </select>
-      
+
       <button type="submit" class="upload-btn">Upload</button>
     </form>
   </div>
